@@ -10,32 +10,42 @@ type Handler struct {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
-	auth := router.Group("/auth")
-	{
-		auth.POST("/sign-up", h.sugnUp)
-		auth.POST("/sign-in", h.sugnIn)
-	}
-
 	api := router.Group("/api")
 	{
-		lists := api.Group("/lists")
+		project := api.Group("/project")
 		{
-			lists.POST("/", h.createList)
-			lists.GET("/", h.getAllLists)
-			lists.GET("/:id", h.getListById)
-			lists.PUT("/:id", h.updateList)
-			lists.DELETE("/:id", h.deleteList)
-
-			items := lists.Group(":id/items")
-			{
-				items.POST("/", h.createItem)
-				items.GET("/", h.getAllItems)
-				items.GET("/:item_id", h.getItemById)
-				items.PUT("/:item_id", h.updateItem)
-				items.DELETE("/:item_id", h.deleteItem)
-			}
+			project.POST("/", h.createProject)
+			project.GET("/", h.getAllProjects)
+			project.GET("/:id", h.getProjectById)
+			project.PUT("/:id", h.updateProject)
+			project.DELETE("/:id", h.deleteProject)
+		}
+		task := api.Group("/task")
+		{
+			task.POST("/", h.createTask)
+			task.GET("/", h.getAllTasks)
+			task.GET("/:task_id", h.getTaskById)
+			task.PUT("/:task_id", h.updateTask)
+			task.DELETE("/:comment_id", h.deleteTask)
+		}
+		comment := api.Group("/comment")
+		{
+			comment.POST("/", h.createTask)
+			comment.GET("/", h.getAllTasks)
+			comment.GET("/:comment_id", h.getTaskById)
+			comment.PUT("/:comment_id", h.updateTask)
+			comment.DELETE("/:comment_id", h.deleteTask)
+		}
+		column := api.Group("/colomn")
+		{
+			column.POST("/", h.createTask)
+			column.GET("/", h.getAllTasks)
+			column.GET("/:column_id", h.getTaskById)
+			column.PUT("/:column_id", h.updateTask)
+			column.DELETE("/:column_id", h.deleteTask)
 		}
 
 	}
+
 	return router
 }
