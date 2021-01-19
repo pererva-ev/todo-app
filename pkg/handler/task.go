@@ -6,7 +6,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/pererva-ev/todo-app"
-	"github.com/pererva-ev/todo-app/todo"
 )
 
 func (h *Handler) createTask(c *gin.Context) {
