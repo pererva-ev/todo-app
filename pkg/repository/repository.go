@@ -37,7 +37,7 @@ type TodoComment interface {
 	Delete(commentID int) error
 }
 
-type Repository interface {
+type Repository struct {
 	TodoProject
 	TodoColumn
 	TodoTask
@@ -46,9 +46,9 @@ type Repository interface {
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		Project: NewTodoProjectPosgres(db),
-		Column:  NewTodoColumnPosgres(db),
-		Task:    NewTodoTaskPostgres(db),
-		Comment: NewTodoCommentPosgres(db),
+		TodoProject: NewTodoProjectPosgres(db),
+		TodoColumn:  NewTodoColumnPosgres(db),
+		TodoTask:    NewTodoTaskPostgres(db),
+		TodoComment: NewTodoCommentPosgres(db),
 	}
 }
