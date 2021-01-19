@@ -9,13 +9,13 @@ import (
 )
 
 func (h *Handler) createComment(c *gin.Context) {
-	var input todo.Comment
+	var input todo.TodoComment
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.services.Comment.Create(input)
+	id, err := h.services.TodoComment.Create(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -27,11 +27,11 @@ func (h *Handler) createComment(c *gin.Context) {
 }
 
 type getAllCommentsResponse struct {
-	Data []todo.Comment `json:"data"`
+	Data []todo.TodoComment `json:"data"`
 }
 
 func (h *Handler) getAllComments(c *gin.Context) {
-	comments, err := h.services.Comment.GetAll()
+	comments, err := h.services.TodoComment.GetAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -49,7 +49,7 @@ func (h *Handler) getCommentByID(c *gin.Context) {
 		return
 	}
 
-	comment, err := h.services.Comment.GetById(id)
+	comment, err := h.services.TodoComment.GetById(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -71,7 +71,7 @@ func (h *Handler) updateComment(c *gin.Context) {
 		return
 	}
 
-	if err := h.services.Comment.Update(id, input); err != nil {
+	if err := h.services.TodoComment.Update(id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -86,7 +86,7 @@ func (h *Handler) deleteComment(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Comment.Delete(id)
+	err = h.services.TodoComment.Delete(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

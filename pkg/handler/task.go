@@ -9,13 +9,13 @@ import (
 )
 
 func (h *Handler) createTask(c *gin.Context) {
-	var input todo.Task
+	var input todo.TodoTask
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.services.Task.Create(input)
+	id, err := h.services.TodoTask.Create(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -27,11 +27,11 @@ func (h *Handler) createTask(c *gin.Context) {
 }
 
 type getAllTasksResponse struct {
-	Data []todo.Task `json:"data"`
+	Data []todo.TodoTask `json:"data"`
 }
 
 func (h *Handler) getAllTasks(c *gin.Context) {
-	tasks, err := h.services.Task.GetAll()
+	tasks, err := h.services.TodoTask.GetAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -49,7 +49,7 @@ func (h *Handler) getTaskByID(c *gin.Context) {
 		return
 	}
 
-	task, err := h.services.Task.GetById(id)
+	task, err := h.services.TodoTask.GetById(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -71,7 +71,7 @@ func (h *Handler) updateTask(c *gin.Context) {
 		return
 	}
 
-	if err := h.services.Task.Update(id, input); err != nil {
+	if err := h.services.TodoTask.Update(id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -86,13 +86,13 @@ func (h *Handler) deleteTask(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Task.Delete(id)
+	err = h.services.TodoTask.Delete(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, statusResponse {
+	c.JSON(http.StatusOK, statusResponse{
 		Status: "ok",
 	})
 }

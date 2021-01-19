@@ -9,13 +9,13 @@ import (
 )
 
 func (h *Handler) createColumn(c *gin.Context) {
-	var input todo.Column
+	var input todo.TodoColumn
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.services.Column.Create(input)
+	id, err := h.services.TodoColumn.Create(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -27,11 +27,11 @@ func (h *Handler) createColumn(c *gin.Context) {
 }
 
 type getAllColumnsResponse struct {
-	Data []todo.Column `json:"data"`
+	Data []todo.TodoColumn `json:"data"`
 }
 
 func (h *Handler) getAllColumns(c *gin.Context) {
-	columns, err := h.services.Column.GetAll()
+	columns, err := h.services.TodoColumn.GetAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -49,7 +49,7 @@ func (h *Handler) getColumnByID(c *gin.Context) {
 		return
 	}
 
-	column, err := h.services.Column.GetById(id)
+	column, err := h.services.TodoColumn.GetById(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -71,7 +71,7 @@ func (h *Handler) updateColumn(c *gin.Context) {
 		return
 	}
 
-	if err := h.services.Column.Update(id, input); err != nil {
+	if err := h.services.TodoColumn.Update(id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -86,7 +86,7 @@ func (h *Handler) deleteColumn(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Project.Delete(id)
+	err = h.services.TodoColumn.Delete(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

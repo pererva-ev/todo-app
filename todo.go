@@ -2,24 +2,24 @@ package todo
 
 import "errors"
 
-type Column struct {
+type TodoColumn struct {
 	ID     uint16 `json:"id"`
 	Name   string `json:"name"`
 	Status string `json:"status"`
 }
 
-type Comment struct {
+type TodoComment struct {
 	ID   uint16 `json:"id"`
 	Text string `json:"text"`
 }
 
-type Project struct {
+type TodoProject struct {
 	ID          uint16 `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
-type Task struct {
+type TodoTask struct {
 	ID          uint16 `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`

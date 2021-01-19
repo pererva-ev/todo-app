@@ -9,13 +9,13 @@ import (
 )
 
 func (h *Handler) createProject(c *gin.Context) {
-	var input todo.Project
+	var input todo.TodoProject
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.services.Project.Create(input)
+	id, err := h.services.TodoProject.Create(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -27,11 +27,11 @@ func (h *Handler) createProject(c *gin.Context) {
 }
 
 type getAllProjectsResponse struct {
-	Data []todo.Project `json:"data"`
+	Data []todo.TodoProject `json:"data"`
 }
 
 func (h *Handler) getAllProjects(c *gin.Context) {
-	projects, err := h.services.Project.GetAll()
+	projects, err := h.services.TodoProject.GetAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -49,7 +49,7 @@ func (h *Handler) getProjectByID(c *gin.Context) {
 		return
 	}
 
-	project, err := h.services.Project.GetById(id)
+	project, err := h.services.TodoProject.GetById(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -71,7 +71,7 @@ func (h *Handler) updateProject(c *gin.Context) {
 		return
 	}
 
-	if err := h.services.Project.Update(id, input); err != nil {
+	if err := h.services.TodoProject.Update(id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -86,7 +86,7 @@ func (h *Handler) deleteProject(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Project.Delete(id)
+	err = h.services.TodoProject.Delete(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
