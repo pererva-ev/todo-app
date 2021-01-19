@@ -26,18 +26,18 @@ func (h *Handler) createComment(c *gin.Context) {
 	})
 }
 
-type getAllColumnsResponse struct {
-	Data []todo.Column `json:"data"`
+type getAllCommentsResponse struct {
+	Data []todo.Comment `json:"data"`
 }
 
-func (h *Handler) getAllColumns(c *gin.Context) {
+func (h *Handler) getAllComments(c *gin.Context) {
 	comments, err := h.services.Comment.GetAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, getAllTasksResponse{
+	c.JSON(http.StatusOK, getAllCommentsResponse{
 		Data: comments,
 	})
 }

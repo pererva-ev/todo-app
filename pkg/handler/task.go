@@ -92,7 +92,7 @@ func (h *Handler) deleteTask(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, statusResponse{
+	c.JSON(http.StatusOK, statusResponse {
 		Status: "ok",
 	})
 }

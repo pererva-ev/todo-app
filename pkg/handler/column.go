@@ -37,7 +37,7 @@ func (h *Handler) getAllColumns(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, getAllTasksResponse{
+	c.JSON(http.StatusOK, getAllColumnsResponse{
 		Data: columns,
 	})
 }
