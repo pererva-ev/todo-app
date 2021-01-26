@@ -6,6 +6,14 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+const (
+	todoTasksTable  = "todo_task"
+	todoProjectsTable  = "todo_project"
+	todoColumnsTable  = "todo_column"
+	todoCommentsTable  = "todo_comment"
+
+)
+
 type Config struct {
 	Host     string
 	Port     string

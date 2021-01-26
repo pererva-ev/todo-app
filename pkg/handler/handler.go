@@ -32,23 +32,23 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			task.GET("/", h.getAllTasks)
 			task.GET("/:task_id", h.getTaskByID)
 			task.PUT("/:task_id", h.updateTask)
-			task.DELETE("/:comment_id", h.deleteTask)
+			task.DELETE("/:task_id", h.deleteTask)
 		}
 		comment := api.Group("/comment")
 		{
-			comment.POST("/", h.createTask)
-			comment.GET("/", h.getAllTasks)
-			comment.GET("/:comment_id", h.getTaskByID)
-			comment.PUT("/:comment_id", h.updateTask)
-			comment.DELETE("/:comment_id", h.deleteTask)
+			comment.POST("/", h.createComment)
+			comment.GET("/", h.getAllComments)
+			comment.GET("/:comment_id", h.getCommentByID)
+			comment.PUT("/:comment_id", h.updateComment)
+			comment.DELETE("/:comment_id", h.deleteComment)
 		}
 		column := api.Group("/colomn")
 		{
-			column.POST("/", h.createTask)
-			column.GET("/", h.getAllTasks)
-			column.GET("/:column_id", h.getTaskByID)
-			column.PUT("/:column_id", h.updateTask)
-			column.DELETE("/:column_id", h.deleteTask)
+			column.POST("/", h.createColumn)
+			column.GET("/", h.getAllColumns)
+			column.GET("/:column_id", h.getColumnByID)
+			column.PUT("/:column_id", h.updateColumn)
+			column.DELETE("/:column_id", h.deleteColumn)
 		}
 
 	}
