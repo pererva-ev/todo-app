@@ -38,7 +38,7 @@ func (r *TodoTaskPostgres) Create(task todo.TodoTask) (int, error) {
 func (r *TodoTaskPostgres) GetAll() ([]todo.TodoTask, error) {
 	var tasks []todo.TodoTask
 
-	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.task_id ",
+	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl",
 		todoTasksTable)
 	err := r.db.Select(&tasks, query)
 
@@ -48,8 +48,7 @@ func (r *TodoTaskPostgres) GetAll() ([]todo.TodoTask, error) {
 func (r *TodoTaskPostgres) GetById(taskId int) (todo.TodoTask, error) {
 	var task todo.TodoTask
 
-	query := fmt.Sprintf(`SELECT tl.id, tl.title, tl.description FROM %s tl
-								INNER JOIN %s ul on tl.id = ul.task_id AND ul.task_id = $2`,
+	query := fmt.Sprintf(`SELECT tl.id, tl.title, tl.description FROM %s tl WHERE tl.id = ul.task_id`,
 		todoTasksTable)
 	err := r.db.Get(&task, query, taskId)
 
@@ -57,7 +56,7 @@ func (r *TodoTaskPostgres) GetById(taskId int) (todo.TodoTask, error) {
 }
 
 func (r *TodoTaskPostgres) Delete(taskId int) error {
-	query := fmt.Sprintf("DELETE FROM %s tl USING %s ul WHERE tl.id = ul.task_id AND ul.task_id=$2",
+	query := fmt.Sprintf("DELETE FROM %s tl WHERE tl.id = ul.task_id ",
 		todoTasksTable)
 	_, err := r.db.Exec(query, taskId)
 
@@ -81,13 +80,11 @@ func (r *TodoTaskPostgres) Update(taskId int, input todo.UpdateTaskInput) error 
 		argId++
 	}
 
-	// title=$1
-	// description=$1
-	// title=$1, description=$2
+
 	setQuery := strings.Join(setValues, ", ")
 
-	query := fmt.Sprintf("UPDATE %s tl SET %s FROM %s ul WHERE tl.id = ul.task_id AND ul.task_id=$%d",
-		todoTasksTable, setQuery, argId, argId+1)
+	query := fmt.Sprintf("UPDATE %s tl FROM %s ul WHERE tl.id = ul.task_id AND ul.task_id=$%d",
+		setQuery, todoTasksTable, argId)
 	args = append(args, taskId)
 
 	logrus.Debugf("updateQuery: %s", query)

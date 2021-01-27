@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/sirupsen/logrus"
 	"github.com/pererva-ev/todo-app"
+	"github.com/sirupsen/logrus"
 )
 
 type TodoColumnPostgres struct {
@@ -24,13 +24,12 @@ func (r *TodoColumnPostgres) Create(column todo.TodoColumn) (int, error) {
 	}
 
 	var id int
-	createColumnQuery := fmt.Sprintf("INSERT INTO %s (title, description) VALUES ($1, $2) RETURNING id", todoColumnsTable)
+	createColumnQuery := fmt.Sprintf("INSERT INTO %s (name, status) VALUES ($1, $2) RETURNING id", todoColumnsTable)
 	row := tx.QueryRow(createColumnQuery, column.Name, column.Status)
 	if err := row.Scan(&id); err != nil {
 		tx.Rollback()
 		return 0, err
 	}
-
 
 	return id, tx.Commit()
 }
@@ -38,7 +37,7 @@ func (r *TodoColumnPostgres) Create(column todo.TodoColumn) (int, error) {
 func (r *TodoColumnPostgres) GetAll() ([]todo.TodoColumn, error) {
 	var columns []todo.TodoColumn
 
-	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.column_id ",
+	query := fmt.Sprintf("SELECT tl.id, tl.name, tl.status FROM %s tl",
 		todoColumnsTable)
 	err := r.db.Select(&columns, query)
 
@@ -48,17 +47,17 @@ func (r *TodoColumnPostgres) GetAll() ([]todo.TodoColumn, error) {
 func (r *TodoColumnPostgres) GetById(columnId int) (todo.TodoColumn, error) {
 	var column todo.TodoColumn
 
-	query := fmt.Sprintf(`SELECT tl.id, tl.title, tl.description FROM %s tl
-								INNER JOIN %s ul on tl.id = ul.column_id AND ul.column_id = $2`,
-		todoColumnsTable)
+	query := fmt.Sprintf(`SELECT tl.id, tl.name, tl.status FROM %s tl
+							WHERE  tl.comment_id=$%d`,
+		todoColumnsTable, columnId)
 	err := r.db.Get(&column, query, columnId)
 
 	return column, err
 }
 
 func (r *TodoColumnPostgres) Delete(columnId int) error {
-	query := fmt.Sprintf("DELETE FROM %s tl USING %s ul WHERE tl.id = ul.column_id AND ul.column_id=$2",
-		todoColumnsTable)
+	query := fmt.Sprintf("DELETE FROM %s tl  WHERE  tl.comment_id=$%d",
+		todoColumnsTable, columnId)
 	_, err := r.db.Exec(query, columnId)
 
 	return err
@@ -70,24 +69,24 @@ func (r *TodoColumnPostgres) Update(columnId int, input todo.UpdateColumnInput) 
 	argId := 1
 
 	if input.Name != nil {
-		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
+		setValues = append(setValues, fmt.Sprintf("name=$%d", argId))
 		args = append(args, *input.Name)
 		argId++
 	}
 
 	if input.Status != nil {
-		setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
+		setValues = append(setValues, fmt.Sprintf("status=$%d", argId))
 		args = append(args, *input.Status)
 		argId++
 	}
 
-	// title=$1
-	// description=$1
-	// title=$1, description=$2
+	// name=$1
+	// status=$1
+	// name=$1, status=$2
 	setQuery := strings.Join(setValues, ", ")
 
-	query := fmt.Sprintf("UPDATE %s tl SET %s FROM %s ul WHERE tl.id = ul.column_id AND ul.column_id=$%d",
-		todoColumnsTable, setQuery, argId, argId+1)
+	query := fmt.Sprintf("UPDATE %s tl FROM %s ul WHERE  tl.comment_id=$%d",
+		setQuery, todoColumnsTable, argId)
 	args = append(args, columnId)
 
 	logrus.Debugf("updateQuery: %s", query)

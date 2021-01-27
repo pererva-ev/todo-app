@@ -22,18 +22,18 @@ func (s *TodoProjectService) GetAll() ([]todo.TodoProject, error) {
 	return s.repo.GetAll()
 }
 
-func (s *TodoProjectService) GetById(listId int) (todo.TodoProject, error) {
-	return s.repo.GetById(listId)
+func (s *TodoProjectService) GetById(projectId int) (todo.TodoProject, error) {
+	return s.repo.GetById(projectId)
 }
 
-func (s *TodoProjectService) Delete(listId int) error {
-	return s.repo.Delete(listId)
+func (s *TodoProjectService) Delete(projectId int) error {
+	return s.repo.Delete(projectId)
 }
 
-func (s *TodoProjectService) Update(listId int, input todo.UpdateProjectInput) error {
+func (s *TodoProjectService) Update(projectId int, input todo.UpdateProjectInput) error {
 	if err := input.Validate(); err != nil {
 		return err
 	}
 
-	return s.repo.Update(listId, input)
+	return s.repo.Update(projectId, input)
 }

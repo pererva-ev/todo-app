@@ -38,7 +38,7 @@ func (r *TodoCommentPostgres) Create(comment todo.TodoComment) (int, error) {
 func (r *TodoCommentPostgres) GetAll() ([]todo.TodoComment, error) {
 	var comments []todo.TodoComment
 
-	query := fmt.Sprintf("SELECT tl.id, tl.text FROM %s tl INNER JOIN %s ul on tl.id = ul.comment_id ",
+	query := fmt.Sprintf("SELECT tl.id, tl.text FROM %s tl ",
 		todoCommentsTable)
 	err := r.db.Select(&comments, query)
 
@@ -48,8 +48,8 @@ func (r *TodoCommentPostgres) GetAll() ([]todo.TodoComment, error) {
 func (r *TodoCommentPostgres) GetById(commentId int) (todo.TodoComment, error) {
 	var comment todo.TodoComment
 
-	query := fmt.Sprintf(`SELECT tl.id, tl.textFROM %s tl
-								INNER JOIN %s ul on tl.id = ul.comment_id AND ul.comment_id = $2`,
+	query := fmt.Sprintf(`SELECT tl.id, tl.text FROM %s tl
+							WHERE tl.comment_id = $2`,
 		todoCommentsTable)
 	err := r.db.Get(&comment, query, commentId)
 
@@ -57,7 +57,7 @@ func (r *TodoCommentPostgres) GetById(commentId int) (todo.TodoComment, error) {
 }
 
 func (r *TodoCommentPostgres) Delete(commentId int) error {
-	query := fmt.Sprintf("DELETE FROM %s tl USING %s ul WHERE tl.id = ul.comment_id AND ul.comment_id=$2",
+	query := fmt.Sprintf("DELETE FROM %s tl WHERE tl.comment_id = $2",
 		todoCommentsTable)
 	_, err := r.db.Exec(query, commentId)
 
@@ -76,14 +76,10 @@ func (r *TodoCommentPostgres) Update(commentId int, input todo.UpdateCommentInpu
 	}
 
 
-
-	// title=$1
-	// description=$1
-	// title=$1, description=$2
 	setQuery := strings.Join(setValues, ", ")
 
-	query := fmt.Sprintf("UPDATE %s tl SET %s FROM %s ul WHERE tl.id = ul.comment_id AND ul.comment_id=$%d",
-		todoCommentsTable, setQuery, argId, argId+1)
+	query := fmt.Sprintf("UPDATE %s tl FROM %s tl WHERE  tl.comment_id=$%d",
+		 setQuery, todoCommentsTable, argId)
 	args = append(args, commentId)
 
 	logrus.Debugf("updateQuery: %s", query)
